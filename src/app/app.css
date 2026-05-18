@@ -354,3 +354,44 @@
   font-style: italic;
   color: #8c7d70;
 }
+
+/* DIARIO DI BORDO (FOOTER CRONOLOGIA) - AGGIUNTO */
+.game-footer {
+  margin-top: 3.5rem;
+  border-top: 1px dashed #e6dacb;
+  padding-top: 1.5rem;
+}
+
+.history-title {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #8c7d70;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+.history-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.6;
+}
+
+.history-step {
+  font-size: 0.95rem;
+  color: #8c7d70;
+  font-style: italic;
+}
+
+.current-step {
+  color: #1a1512;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.history-separator {
+  color: #c5a880;
+  font-size: 0.85rem;
+}

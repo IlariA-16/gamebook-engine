@@ -10,8 +10,8 @@ export class StoryService {
   private storyNodes: StoryNode[] = [];
   private inventory: string[] = [];
   private currentHp: number = 10;
+  private history: string[] = []; // Array interno per lo storico dei capitoli visitati
   
-  // NUOVO: Tracciamento del combattimento attivo e log dei turni
   public activeCombat: EnemyCombat | null = null;
   private combatLogSubject = new BehaviorSubject<string>('');
   public combatLog$: Observable<string> = this.combatLogSubject.asObservable();
@@ -27,6 +27,10 @@ export class StoryService {
 
   private lastDiceRollSubject = new BehaviorSubject<number>(-1);
   public lastDiceRoll$: Observable<number> = this.lastDiceRollSubject.asObservable();
+
+  // Gestisce lo stato della cronologia per l'interfaccia utente
+  private historySubject = new BehaviorSubject<string[]>([]);
+  public history$: Observable<string[]> = this.historySubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.loadStory();
@@ -48,7 +52,6 @@ export class StoryService {
       this.lastDiceRollSubject.next(-1);
       this.combatLogSubject.next('');
 
-      // Se il nodo ha un combattimento impostato nel JSON, lo attiva
       if (targetNode.combat) {
         this.activeCombat = { ...targetNode.combat };
       } else {
@@ -63,6 +66,12 @@ export class StoryService {
       if (targetNode.hpModifier) {
         this.modifyHp(targetNode.hpModifier, targetNode.title || 'Pericolo');
       }
+
+      // Registra il titolo del capitolo nella cronologia, evitando la schermata fissa di morte
+      if (targetNode.title && targetNode.id !== 'morte_hp') {
+        this.history.push(targetNode.title);
+        this.historySubject.next([...this.history]);
+      }
       
       this.currentNodeSubject.next(targetNode);
     } else {
@@ -70,18 +79,15 @@ export class StoryService {
     }
   }
 
-  // NUOVO: Gestisce l'attacco a turni dell'RPG
   public executeCombatTurn(): void {
     if (!this.activeCombat) return;
 
-    // 1. Turno del Giocatore: lancia un dado per calcolare il danno sferrato
     const playerRoll = Math.floor(Math.random() * 6) + 1;
     this.lastDiceRollSubject.next(playerRoll);
     this.activeCombat.hp -= playerRoll;
 
     let log = `⚔️ Attacchi ${this.activeCombat.name}: lanci il dado e infliggi ${playerRoll} danni!`;
 
-    // Controlla se il nemico è morto
     if (this.activeCombat.hp <= 0) {
       this.activeCombat.hp = 0;
       this.combatLogSubject.next(`${log}\n🏆 Hai sconfitto il nemico!`);
@@ -89,7 +95,6 @@ export class StoryService {
       return;
     }
 
-    // 2. Turno del Mostro: contrattacca e toglie HP fissi al giocatore
     this.modifyHp(-this.activeCombat.damage, this.activeCombat.name);
     log += `\n💥 Il ${this.activeCombat.name} risponde al colpo e ti infligge ${this.activeCombat.damage} danni!`;
     
@@ -99,7 +104,6 @@ export class StoryService {
     this.combatLogSubject.next(log);
   }
 
-  // Helper centralizzato per modificare gli HP
   private modifyHp(amount: number, source: string): void {
     this.currentHp += amount;
     if (this.currentHp > 10) this.currentHp = 10;
@@ -141,9 +145,11 @@ export class StoryService {
   public restartGame(): void {
     this.inventory = [];
     this.currentHp = 10;
+    this.history = []; // Svuota lo storico dei passi
     this.activeCombat = null;
     this.inventorySubject.next([]);
     this.hpSubject.next(this.currentHp);
+    this.historySubject.next([]); // Resetta la UI
     this.lastDiceRollSubject.next(-1);
     this.combatLogSubject.next('');
     this.goToNode('intro');

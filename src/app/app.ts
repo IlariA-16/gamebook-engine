@@ -14,7 +14,8 @@ export class AppComponent {
   inventory$;
   hp$;
   lastDiceRoll$;
-  combatLog$; // <-- AGGIUNGI QUESTO PER IL COMBATTIMENTO
+  combatLog$;
+  history$; // <-- DICHIARA LA CRONOLOGIA QUI
 
   // Impostiamo public per consentire all'HTML di accedere a activeCombat
   constructor(public storyService: StoryService) {
@@ -22,7 +23,8 @@ export class AppComponent {
     this.inventory$ = this.storyService.inventory$;
     this.hp$ = this.storyService.hp$;
     this.lastDiceRoll$ = this.storyService.lastDiceRoll$;
-    this.combatLog$ = this.storyService.combatLog$; // <-- INIZIALIZZA IL LOG DI BATTAGLIA
+    this.combatLog$ = this.storyService.combatLog$;
+    this.history$ = this.storyService.history$; // <-- AGGANCIA LA CRONOLOGIA AL SERVIZIO
   }
 
   // Verifica se il giocatore soddisfa i requisiti della scelta
@@ -41,7 +43,7 @@ export class AppComponent {
     this.storyService.rollDice(challenge);
   }
 
-  // NUOVO: Gestisce il click sul pulsante d'attacco a turni
+  // Gestisce il click sul pulsante d'attacco a turni
   onAttack(): void {
     this.storyService.executeCombatTurn();
   }

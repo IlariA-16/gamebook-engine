@@ -109,6 +109,25 @@
       }
     </main>
 
+    <!-- DIARIO DI BORDO (CRONOLOGIA) -->
+    @if (history$ | async; as steps) {
+      @if (steps.length > 0) {
+        <footer class="game-footer">
+          <div class="history-title">📜 Diario di Bordo:</div>
+          <div class="history-trail">
+            @for (step of steps; track step; let last = $last) {
+              <span class="history-step" [class.current-step]="last">
+                {{ step }}
+              </span>
+              @if (!last) {
+                <span class="history-separator">➔</span>
+              }
+            }
+          </div>
+        </footer>
+      }
+    }
+
   } @else {
     <!-- Schermata di caricamento iniziale -->
     <div class="loading">
