@@ -2,7 +2,7 @@
   {
     "id": "intro",
     "title": "La Fortezza di Smeraldo",
-    "text": "Dopo settimane di viaggio nella Terra Desolata, ti trovi di fronte all'immensa Fortezza di Smeraldo, l'antico bastione del Re Folle. La pioggia batte incessante sull'armatura. Davanti a te si aprono tre vie d'accesso: il monumentale Portone di Ferro (apparentemente sigillato), una grata arrugginita che conduce alle Fogne sotterranee, o una breccia nelle mura coperte di rovi che porta verso i vecchi Giardini Reali.",
+    "text": "Dopo settimane di viaggio nella Terra Desolata, ti trovi di fronte all'immensa Fortezza di Smeraldo, l'antico bastione del Re Folle. La pioggia batte incessante sull'armatura. Davanti a te si aprono three vie d'accesso: il monumentale Portone di Ferro (apparentemente sigillato), una grata arrugginita che conduce alle Fogne sotterranee, o una breccia nelle mura coperte di rovi che porta verso i vecchi Giardini Reali.",
     "choices": [
       { "text": "Esamina da vicino il Portone di Ferro", "nextNodeId": "portone_bivio" },
       { "text": "Forza la grata e scendi nelle Fogne", "nextNodeId": "fogne_ingresso" },
@@ -13,7 +13,7 @@
   {
     "id": "portone_bivio",
     "title": "Il Meccanismo del Portone",
-    "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, three pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
+    "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, tre pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
     "choices": [
       { "text": "Premi il pulsante 3", "nextNodeId": "goblin_attacco" },
       { "text": "Premi il pulsante 7", "nextNodeId": "atrio_principale" },
@@ -62,57 +62,26 @@
   {
     "id": "prigioni_sotto",
     "title": "Le Celle dell'Oblio",
-    "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano sta dormendo su una sedia. Vicino a te, una misteriosa fonte d'acqua magica emana calore.",
-    "choices": [
-      { "text": "Bevi dall'acqua magica per rinvigorirti", "nextNodeId": "fontana_cura" },
-      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "sfida_orco" },
-      { "text": "Evita l'orco e prendi un passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
-    ],
-    "isEnding": false
-  },
-  {
-    "id": "fontana_cura",
-    "title": "Fonte Rigenerante",
-    "text": "Bevi l'acqua della fonte. Un calore benefico si diffonde nel tuo corpo, rimarginando le tue ferite. Recuperi 3 HP! Ora devi decidere come superare questo piano.",
-    "choices": [
-      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "sfida_orco" },
-      { "text": "Prendi il passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
-    ],
-    "isEnding": false,
-    "hpModifier": 3
-  },
-  {
-    "id": "sfida_orco",
-    "title": "Tiro di Destrezza",
-    "text": "Ti avvicini in punta di piedi trattenendo il respiro. Le tue dita sfiorano il mazzo metallico... Affidati alla fortuna per non far tintinnare le chiavi!",
+    "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano si sveglia all'improvviso sbarrandoti la strada! Impugna una gigantesca clava chiodata e ruggisce inferocito verso di te. Non puoi fuggire, devi combattere!",
     "choices": [],
     "isEnding": false,
-    "diceChallenge": {
-      "targetScore": 4,
-      "successNodeId": "orco_superato",
-      "failureNodeId": "orco_sveglio"
+    "combat": {
+      "name": "Orco Guardiano",
+      "hp": 12,
+      "damage": 2,
+      "successNodeId": "orco_sconfitto"
     }
   },
   {
-    "id": "orco_superato",
-    "title": "Furto Riuscito!",
-    "text": "Incredibile! Con una fermezza da vero ladro sfili il mazzo senza emettere il minimo rumore. L'orco continua a russare pesantemente. Ne approfitti per scivolare oltre la porta della tesoreria e trovi una pozione ricostituente (+2 HP) e la Chiave Dorata prima di risalire.",
+    "id": "orco_sconfitto",
+    "title": "Il Mostro Abbattuto",
+    "text": "Con un ultimo colpo decisivo, l'Orco Guardiano crolla al suolo con un pesante tonfo, privo di sensi. Tra i suoi averi trovi la Chiave Dorata della cancellata superiore. Ti curi parzialmente dalle ferite prima di risalire.",
     "choices": [
-      { "text": "Prendi il passaggio d'aerazione e torna all'Atrio", "nextNodeId": "atrio_principale" }
+      { "text": "Sali verso l'Atrio del Re portando via il bottino", "nextNodeId": "atrio_principale" }
     ],
     "isEnding": false,
     "itemToGive": "Chiave Dorata",
-    "hpModifier": 2
-  },
-  {
-    "id": "orco_sveglio",
-    "title": "Il Brutale Risveglio",
-    "text": "Il mazzo tintinna vistosamente. L'orco spalanca gli occhi rossi, ringhia infuriato e ti colpisce in pieno petto con la sua clava chiodata! Subisci un danno devastante di 6 HP, ma riesci a scappare a stento nel condotto d'aerazione.",
-    "choices": [
-      { "text": "Trascina il corpo ferito su per il condotto", "nextNodeId": "atrio_principale" }
-    ],
-    "isEnding": false,
-    "hpModifier": -6
+    "hpModifier": 3
   },
   {
     "id": "giardini_ingresso",
@@ -194,7 +163,7 @@
   {
     "id": "enigma_quadro",
     "title": "L'Enigma dei Tre Regnanti",
-    "text": "Il quadro mostra tre re. Un'iscrizione dice: 'Il primo mente sempre, il secondo dice la verità, il terzo parla solo se il primo è morto. Chi detiene la chiave del potere?'. Sotto ci sono tre fessure.",
+    "text": "Il quadro mostra three re. Un'iscrizione dice: 'Il primo mente sempre, il secondo dice la verità, il terzo parla solo se il primo è morto. Chi detiene la chiave del potere?'. Sotto ci sono tre fessure.",
     "choices": [
       { "text": "Inserisci la mano nella fessura del Secondo Re", "nextNodeId": "trono_finale_neutro" },
       { "text": "Inserisci la mano nella fessura del Terzo Re", "nextNodeId": "trono_finale_malvagio" },
@@ -226,7 +195,7 @@
   {
     "id": "finale_fuga",
     "title": "FINALE 4 - Il Codardo Sopravvissuto",
-    "text": "Preso dal panico di fronte alla complesità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
+    "text": "Preso dal panico di fronte alla complessità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
     "choices": [],
     "isEnding": true
   }
