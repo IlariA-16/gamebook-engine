@@ -1,6 +1,7 @@
 export interface Choice {
   text: string;
   nextNodeId: string;
+  requiredItem?: string; // ID dell'oggetto necessario per fare questa scelta
 }
 
 export interface StoryNode {
@@ -9,4 +10,5 @@ export interface StoryNode {
   text: string;
   choices: Choice[];
   isEnding: boolean;
+  itemToGive?: string;   // ID dell'oggetto che il giocatore raccoglie in questa scena
 }

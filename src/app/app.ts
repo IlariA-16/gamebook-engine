@@ -10,11 +10,19 @@ import { StoryService } from './story';
   styleUrl: './app.css'
 })
 export class AppComponent {
-  // Assegniamo direttamente l'observable dal servizio
+  // Espone lo stato della scena e dell'inventario direttamente al file HTML
   currentNode$;
+  inventory$;
 
   constructor(private story: StoryService) {
     this.currentNode$ = this.story.currentNode$;
+    this.inventory$ = this.story.inventory$;
+  }
+
+  // Verifica se il giocatore soddisfa i requisiti della scelta
+  canChoose(requiredItem?: string): boolean {
+    if (!requiredItem) return true; // Scelta libera
+    return this.story.hasItem(requiredItem);
   }
 
   // Gestisce il click del giocatore su una scelta

@@ -40,11 +40,55 @@
   font-size: 2.2rem;
   font-weight: 500;
   color: #1a1512;
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   padding-bottom: 0.5rem;
   display: inline-block;
   border-bottom: 2px solid #c5a880; /* Linea decorativa inferiore bronzo/oro */
   font-family: 'Georgia', serif;
+}
+
+/* INTERFACCIA BARRA INVENTARIO */
+.inventory-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: #fdfbf7;
+  border: 1px solid #f0e6da;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.inventory-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #5c4d3c;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inventory-items {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.inventory-badge {
+  background-color: #f0e6da;
+  color: #3d332a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid #e6dacb;
+  font-weight: 500;
+}
+
+.inventory-empty {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #a19283;
 }
 
 /* Area del Racconto */
@@ -81,14 +125,33 @@
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.btn-choice:hover {
+.btn-choice:not(:disabled):hover {
   color: #ffffff;
   background-color: #a88453;
   border-color: #a88453;
   box-shadow: 0 4px 12px rgba(168, 132, 83, 0.2);
   transform: translateY(-1px);
+}
+
+/* PULSANTI DISABILITATI (SCELTE BLOCCATE) */
+.btn-choice:disabled {
+  background-color: #f5f5f5;
+  color: #a1a1a1;
+  border-color: #e0e0e0;
+  cursor: not-allowed; /* Cursore di blocco */
+  opacity: 0.6;
+}
+
+.required-tag {
+  font-size: 0.85rem;
+  color: #c92a2a;
+  font-style: italic;
+  font-weight: bold;
 }
 
 /* Schermata di Fine Gioco / Vittoria */

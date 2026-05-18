@@ -52,7 +52,7 @@
   {
     "id": "cascata_fogne",
     "title": "Il Salto nel Vuoto",
-    "text": "Il flusso si fa improvvisamente troppo violento. Perdi l'equilibrio e vieni trascinato giù per una cascata di venti metri, schiantandoti sulle rocce sottostanti. Le fogne diventano la tua tomba.",
+    "text": "Il flusso si fa improvvisamente troppo violentissimo. Perdi l'equilibrio e vieni trascinato giù per una cascata di venti metri, schiantandoti sulle rocce sottostanti. Le fogne diventano la tua tomba.",
     "choices": [],
     "isEnding": true
   },
@@ -76,10 +76,11 @@
   {
     "id": "giardini_ingresso",
     "title": "Il Giardino Invaso dai Rovi",
-    "text": "Superi la breccia e ti ritrovi in un antico orto botanico reale, ormai divorato dalla natura selvaggia. Al centro c'è una gigantesca pianta carnivora che blocca il sentiero principale. Alla tua sinistra vedi una serra di vetro intatta, mentre a destra c'è un piccolo mausoleo di pietra bianca.",
+    "text": "Superi la breccia e ti ritrovi in un antico orto botanico reale, ormai divorato dalla natura selvaggia. Al centro c'è una pianta carnivora che blocca il sentiero. A sinistra vedi una serra di vetro intatta, mentre a destra c'è un piccolo mausoleo di pietra bianca.",
     "choices": [
       { "text": "Entra nella serra di vetro", "nextNodeId": "serra_alchimia" },
       { "text": "Ispeziona il mausoleo di pietra bianca", "nextNodeId": "mausoleo_cripta" },
+      { "text": "Usa il Diserbante Acido sulla pianta carnivora", "nextNodeId": "piani_superiori", "requiredItem": "Diserbante Acido" },
       { "text": "Tenta di superare la pianta carnivora correndo", "nextNodeId": "morte_pianta" }
     ],
     "isEnding": false
@@ -94,26 +95,17 @@
   {
     "id": "serra_alchimia",
     "title": "La Serra dei Veleni",
-    "text": "La serra contiene fiale di estratti vegetali chimici lasciati dagli alchimisti del re. Trovi un diserbante acido concentrato estremamente potente. Senti però un sibilo: un serpente alchemico dagli occhi di fuoco ti sta sbarrando l'uscita!",
+    "text": "La serra contiene fiale di estratti vegetali lasciati dagli alchimisti. Trovi un diserbante acido concentrato estremamente potente. Un serpente alchemico dagli occhi di fuoco ti sbarra l'uscita!",
     "choices": [
-      { "text": "Lancia il diserbante contro il serpente", "nextNodeId": "serpente_ucciso" },
-      { "text": "Scappa rompendo i vetri della serra", "nextNodeId": "giardini_ingresso" }
+      { "text": "Lancia una pietra e fuggi rompendo i vetri con l'acido in tasca", "nextNodeId": "giardini_ingresso" }
     ],
-    "isEnding": false
-  },
-  {
-    "id": "serpente_ucciso",
-    "title": "La Via del Giardino Sbloccata",
-    "text": "L'acido dissolve il serpente all'istante. Esci dalla serra trionfante con abbastanza diserbante rimasto per distruggere la pianta carnivora che bloccava il sentiero centrale del giardino.",
-    "choices": [
-      { "text": "Usa l'acido sulla pianta carnivora e prosegui", "nextNodeId": "piani_superiori" }
-    ],
-    "isEnding": false
+    "isEnding": false,
+    "itemToGive": "Diserbante Acido"
   },
   {
     "id": "mausoleo_cripta",
     "title": "Il Riposo del Cavaliere",
-    "text": "All'interno del mausoleo c'è il sarcofago del primo comandante della fortezza. Sopra la tomba c'è uno scudo d'argento con un'iscrizione: 'Solo chi affronta lo spettro con onore riceverà la luce'. Lo spettro del comandante si materializza davanti a te, impugnando una spada fantasma.",
+    "text": "All'interno del mausoleo c'è il sarcofago del primo comandante. Lo spettro del guerriero si materializza davanti a te impugnando una spada fantasma. Un'iscrizione recita: 'Solo chi affronta lo spettro con onore riceverà la luce'.",
     "choices": [
       { "text": "Inginocchiati in segno di rispetto", "nextNodeId": "spettro_alleato" },
       { "text": "Estrai la tua arma e combatti lo spettro", "nextNodeId": "morte_spettro" }
@@ -130,20 +122,21 @@
   {
     "id": "spettro_alleato",
     "title": "La Benedizione dello Scudo",
-    "text": "Lo spettro apprezza il tuo onore. Fa un cenno col capo e svanisce, lasciando lo Scudo d'Argento ai tuoi piedi. Questo scudo magico ti proteggerà dalle trappole magiche. Dietro il sarcofago trovi una scalinata segreta che sale direttamente ai piani alti.",
+    "text": "Lo spettro apprezza il tuo onore. Fa un cenno col capo e svanisce, lasciando lo Scudo d'Argento ai tuoi piedi. Questo scudo magico ti proteggerà dalle trappole energetiche. Dietro il sarcofago c'è una scalinata segreta verso i piani alti.",
     "choices": [
       { "text": "Prendi lo scudo e sali le scale segrete", "nextNodeId": "piani_superiori" }
     ],
-    "isEnding": false
+    "isEnding": false,
+    "itemToGive": "Scudo d'Argento"
   },
   {
     "id": "piani_superiori",
     "title": "Le Stanze Alchemiche",
     "text": "Sei finalmente nei quartieri alti della fortezza. L'aria profuma di incenso e ozono. Davanti a te c'è il Laboratorio del Re Folle. Una barriera magica di fulmini viola protegge la porta della Sala del Trono, dove è custodita la Corona di Smeraldo.",
     "choices": [
-      { "text": "Tenta di attraversare i fulmini usando lo Scudo d'Argento", "nextNodeId": "trono_finale_buono" },
-      { "text": "Disattiva la barriera risolvendo l'enigma del quadro sul muro", "nextNodeId": "enigma_quadro" },
-      { "text": "Tenta di forzare la barriera a piedi nudi", "nextNodeId": "morte_fulmini" }
+      { "text": "Attraversa i fulmini usando lo Scudo d'Argento", "nextNodeId": "trono_finale_buono", "requiredItem": "Scudo d'Argento" },
+      { "text": "Disattiva la barriera risolvendo l'enigma del quadro", "nextNodeId": "enigma_quadro" },
+      { "text": "Tenta di forzare la barriera magica a piedi nudi", "nextNodeId": "morte_fulmini" }
     ],
     "isEnding": false
   },
@@ -157,39 +150,39 @@
   {
     "id": "enigma_quadro",
     "title": "L'Enigma dei Tre Regnanti",
-    "text": "Il quadro mostra tre re. Un'iscrizione dice: 'Il primo mente sempre, il secondo dice sempre la verità, il terzo parla solo se il primo è morto. Chi dei tre detiene la chiave del potere?'. Sotto ci sono tre fessure in cui inserire la mano.",
+    "text": "Il quadro mostra tre re. Un'iscrizione dice: 'Il primo mente sempre, il secondo dice la verità, il terzo parla solo se il primo è morto. Chi detiene la chiave del potere?'. Sotto ci sono tre fessure.",
     "choices": [
       { "text": "Inserisci la mano nella fessura del Secondo Re", "nextNodeId": "trono_finale_neutro" },
       { "text": "Inserisci la mano nella fessura del Terzo Re", "nextNodeId": "trono_finale_malvagio" },
-      { "text": "Infilati nel corridoio laterale per fuggire", "nextNodeId": "finale_fuga" }
+      { "text": "Infilati nel corridoio laterale per fuggire dalla fortezza", "nextNodeId": "finale_fuga" }
     ],
     "isEnding": false
   },
   {
     "id": "trono_finale_buono",
     "title": "FINALE 1 - Il Re Giusto",
-    "text": "Lo Scudo d'Argento assorbe i fulmini magici! Entri nella Sala del Trono, sconfiggi l'ombra del Re Folle e indossi la Corona di Smeraldo. La tua purezza e il tuo coraggio guariscono la Terra Desolata dalla maledizione. Diventi il nuovo saggio regnante. Vittoria Perfetta!",
+    "text": "Lo Scudo d'Argento assorbe i fulmini magici! Entri nella Sala del Trono, sconfiggi l'ombra del Re Folle e indossi la Corona di Smeraldo. Diventi il nuovo saggio regnante. Vittoria Perfetta!",
     "choices": [],
     "isEnding": true
   },
   {
     "id": "trono_finale_neutro",
     "title": "FINALE 2 - Il Custode del Sapere",
-    "text": "La scelta è corretta e la barriera si dissolve. Entri nella stanza e trovi la Corona, ma decidi che il suo potere è troppo pericoloso per un solo uomo. La distruggi, liberando l'energia nel mondo e lasciando la fortezza per sempre. Scegli una vita di pace e studio. Vittoria Neutra.",
+    "text": "La scelta è corretta e la barriera si dissolve. Trovi la Corona, ma decidi che il suo potere è troppo pericoloso. La distruggi, liberando l'energia e scegliendo una vita di pace. Vittoria Neutra.",
     "choices": [],
     "isEnding": true
   },
   {
     "id": "trono_finale_malvagio",
     "title": "FINALE 3 - L'Erede della Follia",
-    "text": "Inserisci la mano e un meccanismo oscuro ti punge il dito. La barriera si apre, ma il veleno magico altera la tua mente. Arrivato al trono, indossi la corona ma vieni consumato dalla stessa follia del re precedente. Diventi il nuovo tiranno della fortezza. Vittoria Oscura.",
+    "text": "Inserisci la mano e un meccanismo ti punge il dito. La barriera si apre, ma il veleno altera la tua mente. Indossi la corona e vieni consumato dalla follia. Diventi il nuovo tiranno.",
     "choices": [],
     "isEnding": true
   },
   {
     "id": "finale_fuga",
     "title": "FINALE 4 - Il Codardo Sopravvissuto",
-    "text": "Preso dal panico di fronte alla complessità degli enigmi, decidi che la tua vita vale più di qualsiasi corona. Scendi le scale e fuggi dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
+    "text": "Preso dal panico di fronte alla complessità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
     "choices": [],
     "isEnding": true
   }
