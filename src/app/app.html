@@ -38,8 +38,28 @@
       <!-- Testo principale del bivio corrente -->
       <p class="story-text">{{ node.text }}</p>
 
-      <!-- Elenco delle scelte disponibili se non è un finale -->
-      @if (!node.isEnding) {
+      <!-- SE C'È UNA SFIDA CON I DADI -->
+      @if (node.diceChallenge) {
+        <div class="dice-challenge-container">
+          <div class="challenge-info">
+            🎲 <strong>SFIDA DEL DESTINO:</strong> Devi fare almeno <strong>{{ node.diceChallenge.targetScore }}</strong> per superare la prova!
+          </div>
+
+          @if ((lastDiceRoll$ | async) === -1) {
+            <!-- Bottone di lancio se non ha ancora tirato il dado -->
+            <button class="btn-dice-roll" (click)="onRollDice(node.diceChallenge)">
+              🎲 Lancia il Dado
+            </button>
+          } @else {
+            <!-- Mostra il risultato del dado con animazione -->
+            <div class="dice-result-box animate-roll">
+              <span class="dice-number">🎲 {{ lastDiceRoll$ | async }}</span>
+              <p class="rolling-text">Il destino sta decidendo...</p>
+            </div>
+          }
+        </div>
+      } @else if (!node.isEnding) {
+        <!-- Elenco delle scelte standard disponibili se non è un finale -->
         <div class="choices-container">
           @for (choice of node.choices; track choice.nextNodeId) {
             <button 
@@ -49,7 +69,6 @@
               
               {{ choice.text }}
               
-              <!-- Segnalazione se la scelta richiede un oggetto specifico -->
               @if (choice.requiredItem && !canChoose(choice.requiredItem)) {
                 <span class="required-tag">🔒 (Richiede: {{ choice.requiredItem }})</span>
               }

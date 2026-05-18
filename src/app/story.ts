@@ -8,31 +8,31 @@ import { StoryNode } from './story.model';
 })
 export class StoryService {
   private storyNodes: StoryNode[] = [];
-  private inventory: string[] = []; // Array interno per gli oggetti posseduti
-  private currentHp: number = 10;   // Salute massima iniziale (NUOVO)
+  private inventory: string[] = [];
+  private currentHp: number = 10;
   
-  // Gestisce lo stato del nodo attuale e notifica i componenti quando cambia
   private currentNodeSubject = new BehaviorSubject<StoryNode | null>(null);
   public currentNode$: Observable<StoryNode | null> = this.currentNodeSubject.asObservable();
 
-  // Gestisce lo stato dell'inventario e notifica l'interfaccia utente
   private inventorySubject = new BehaviorSubject<string[]>([]);
   public inventory$: Observable<string[]> = this.inventorySubject.asObservable();
 
-  // Gestisce lo stato della salute (HP) e notifica l'interfaccia utente (NUOVO)
   private hpSubject = new BehaviorSubject<number>(10);
   public hp$: Observable<number> = this.hpSubject.asObservable();
+
+  // Gestisce il risultato del dado (-1 significa nessun lancio effettuato)
+  private lastDiceRollSubject = new BehaviorSubject<number>(-1);
+  public lastDiceRoll$: Observable<number> = this.lastDiceRollSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.loadStory();
   }
 
-  // Carica il file JSON gigante dalla cartella public
   private loadStory(): void {
     this.http.get<StoryNode[]>('story-data.json').subscribe({
       next: (nodes) => {
         this.storyNodes = nodes;
-        this.restartGame(); // Inizia o pulisce il gioco all'avvio
+        this.restartGame();
       },
       error: (err) => {
         console.error('Errore nel caricamento della storia:', err);
@@ -40,26 +40,26 @@ export class StoryService {
     });
   }
 
-  // Sposta il giocatore su un nuovo bivio tramite il suo ID
   public goToNode(nodeId: string): void {
     const targetNode = this.storyNodes.find(node => node.id === nodeId);
     if (targetNode) {
-      // 1. Se il nodo attuale assegna un oggetto, lo aggiungiamo all'inventario
+      // Resetta il dado ogni volta che si cambia capitolo
+      this.lastDiceRollSubject.next(-1);
+
       if (targetNode.itemToGive && !this.inventory.includes(targetNode.itemToGive)) {
         this.inventory.push(targetNode.itemToGive);
-        this.inventorySubject.next([...this.inventory]); // Notifica la UI
+        this.inventorySubject.next([...this.inventory]);
       }
 
-      // 2. Gestione Punti Vita (HP) (NUOVO)
       if (targetNode.hpModifier) {
         this.currentHp += targetNode.hpModifier;
-        if (this.currentHp > 10) this.currentHp = 10; // Non supera il limite massimo
+        if (this.currentHp > 10) this.currentHp = 10;
         
         if (this.currentHp <= 0) {
           this.currentHp = 0;
           this.hpSubject.next(this.currentHp);
           this.triggerDeathNode(targetNode.title || 'Pericolo');
-          return; // Ferma il gioco, l'utente è morto
+          return;
         }
         this.hpSubject.next(this.currentHp);
       }
@@ -70,7 +70,20 @@ export class StoryService {
     }
   }
 
-  // Genera istantaneamente una schermata di Game Over personalizzata per fine salute (NUOVO)
+  // Lancia il dado ed esegue il re-indirizzamento dopo 1.2 secondi
+  public rollDice(challenge: { targetScore: number; successNodeId: string; failureNodeId: string }): void {
+    const roll = Math.floor(Math.random() * 6) + 1;
+    this.lastDiceRollSubject.next(roll);
+
+    setTimeout(() => {
+      if (roll >= challenge.targetScore) {
+        this.goToNode(challenge.successNodeId);
+      } else {
+        this.goToNode(challenge.failureNodeId);
+      }
+    }, 1200);
+  }
+
   private triggerDeathNode(scenaMorte: string): void {
     const deathNode: StoryNode = {
       id: 'morte_hp',
@@ -82,17 +95,16 @@ export class StoryService {
     this.currentNodeSubject.next(deathNode);
   }
 
-  // Controlla se il giocatore possiede un determinato oggetto
   public hasItem(itemName: string): boolean {
     return this.inventory.includes(itemName);
   }
 
-  // Riavvia la storia dall'inizio, svuota l'inventario e resetta gli HP
   public restartGame(): void {
     this.inventory = [];
-    this.currentHp = 10; // Resetta gli HP al massimo (NUOVO)
+    this.currentHp = 10;
     this.inventorySubject.next([]);
-    this.hpSubject.next(this.currentHp); // Notifica la UI (NUOVO)
+    this.hpSubject.next(this.currentHp);
+    this.lastDiceRollSubject.next(-1);
     this.goToNode('intro');
   }
 }

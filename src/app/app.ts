@@ -10,16 +10,16 @@ import { StoryService } from './story';
   styleUrl: './app.css'
 })
 export class AppComponent {
-  // Dichiariamo solo le variabili in alto senza assegnarle
   currentNode$;
   inventory$;
   hp$;
+  lastDiceRoll$; // <-- AGGIUNGI QUESTO PER IL DADO
 
-  // Le assegniamo qui dentro, dove "storyService" è finalmente pronto e utilizzabile!
   constructor(private storyService: StoryService) {
     this.currentNode$ = this.storyService.currentNode$;
     this.inventory$ = this.storyService.inventory$;
     this.hp$ = this.storyService.hp$;
+    this.lastDiceRoll$ = this.storyService.lastDiceRoll$; // <-- INIZIALIZZA IL DADO
   }
 
   // Verifica se il giocatore soddisfa i requisiti della scelta
@@ -28,9 +28,14 @@ export class AppComponent {
     return this.storyService.hasItem(requiredItem);
   }
 
-  // Gestisce il click del giocatore su una scelta
+  // Gestisce il click del giocatore su una scelta normale
   makeChoice(nextNodeId: string): void {
     this.storyService.goToNode(nextNodeId);
+  }
+
+  // NUOVO: Gestisce il lancio del dado passandogli la sfida corrente
+  onRollDice(challenge: any): void {
+    this.storyService.rollDice(challenge);
   }
 
   // Gestisce il click sul bottone di riavvio

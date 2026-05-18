@@ -13,7 +13,7 @@
   {
     "id": "portone_bivio",
     "title": "Il Meccanismo del Portone",
-    "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, tre pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
+    "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, three pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
     "choices": [
       { "text": "Premi il pulsante 3", "nextNodeId": "goblin_attacco" },
       { "text": "Premi il pulsante 7", "nextNodeId": "atrio_principale" },
@@ -45,7 +45,7 @@
   {
     "id": "fogne_ingresso",
     "title": "Il Labirinto di Fango",
-    "text": "Ti cali nel condotto. L'odore è nauseabondo e l'acqua ti arriva alle knee. Avanzi al buio finché non trovi un bivio idraulico: a sinistra l'acqua scorre rapida verso una cascata sotterranea, a destra il tunnel si stringe e risale verso l'alto, sbarrato da una vecchia botola di legno marcio.",
+    "text": "Ti cali nel condotto. L'odore è nauseabondo e l'acqua ti arriva alle ginocchia. Avanzi al buio finché non trovi un bivio idraulico: a sinistra l'acqua scorre rapida verso una cascata sotterranea, a destra il tunnel si stringe e risale verso l'alto, sbarrato da una vecchia botola di legno marcio.",
     "choices": [
       { "text": "Segui il flusso dell'acqua a sinistra", "nextNodeId": "cascata_fogne" },
       { "text": "Sali verso la botola di legno a destra", "nextNodeId": "prigioni_sotto" }
@@ -65,7 +65,7 @@
     "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano sta dormendo su una sedia. Vicino a te, una misteriosa fonte d'acqua magica emana calore.",
     "choices": [
       { "text": "Bevi dall'acqua magica per rinvigorirti", "nextNodeId": "fontana_cura" },
-      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "orco_chiavi" },
+      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "sfida_orco" },
       { "text": "Evita l'orco e prendi un passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
     ],
     "isEnding": false
@@ -75,18 +75,44 @@
     "title": "Fonte Rigenerante",
     "text": "Bevi l'acqua della fonte. Un calore benefico si diffonde nel tuo corpo, rimarginando le tue ferite. Recuperi 3 HP! Ora devi decidere come superare questo piano.",
     "choices": [
-      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "orco_chiavi" },
+      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "sfida_orco" },
       { "text": "Prendi il passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
     ],
     "isEnding": false,
     "hpModifier": 3
   },
   {
-    "id": "orco_chiavi",
-    "title": "Il Risveglio del Brutale",
-    "text": "Le tue dita sfiorano il mazzo di chiavi, ma il metallo tintinna. L'orco spalanca gli occhi rossi, ringhia e ti afferra per la gola con una forza mostruosa. Non hai tempo di reagire.",
+    "id": "sfida_orco",
+    "title": "Tiro di Destrezza",
+    "text": "Ti avvicini in punta di piedi trattenendo il respiro. Le tue dita sfiorano il mazzo metallico... Affidati alla fortuna per non far tintinnare le chiavi!",
     "choices": [],
-    "isEnding": true
+    "isEnding": false,
+    "diceChallenge": {
+      "targetScore": 4,
+      "successNodeId": "orco_superato",
+      "failureNodeId": "orco_sveglio"
+    }
+  },
+  {
+    "id": "orco_superato",
+    "title": "Furto Riuscito!",
+    "text": "Incredibile! Con una fermezza da vero ladro sfili il mazzo senza emettere il minimo rumore. L'orco continua a russare pesantemente. Ne approfitti per scivolare oltre la porta della tesoreria e trovi una pozione ricostituente (+2 HP) e la Chiave Dorata prima di risalire.",
+    "choices": [
+      { "text": "Prendi il passaggio d'aerazione e torna all'Atrio", "nextNodeId": "atrio_principale" }
+    ],
+    "isEnding": false,
+    "itemToGive": "Chiave Dorata",
+    "hpModifier": 2
+  },
+  {
+    "id": "orco_sveglio",
+    "title": "Il Brutale Risveglio",
+    "text": "Il mazzo tintinna vistosamente. L'orco spalanca gli occhi rossi, ringhia infuriato e ti colpisce in pieno petto con la sua clava chiodata! Subisci un danno devastante di 6 HP, ma riesci a scappare a stento nel condotto d'aerazione.",
+    "choices": [
+      { "text": "Trascina il corpo ferito su per il condotto", "nextNodeId": "atrio_principale" }
+    ],
+    "isEnding": false,
+    "hpModifier": -6
   },
   {
     "id": "giardini_ingresso",
@@ -200,7 +226,7 @@
   {
     "id": "finale_fuga",
     "title": "FINALE 4 - Il Codardo Sopravvissuto",
-    "text": "Preso dal panico di fronte alla complessità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
+    "text": "Preso dal panico di fronte alla complesità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
     "choices": [],
     "isEnding": true
   }
