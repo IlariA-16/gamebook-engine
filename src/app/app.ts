@@ -10,28 +10,31 @@ import { StoryService } from './story';
   styleUrl: './app.css'
 })
 export class AppComponent {
-  // Espone lo stato della scena e dell'inventario direttamente al file HTML
+  // Dichiariamo solo le variabili in alto senza assegnarle
   currentNode$;
   inventory$;
+  hp$;
 
-  constructor(private story: StoryService) {
-    this.currentNode$ = this.story.currentNode$;
-    this.inventory$ = this.story.inventory$;
+  // Le assegniamo qui dentro, dove "storyService" è finalmente pronto e utilizzabile!
+  constructor(private storyService: StoryService) {
+    this.currentNode$ = this.storyService.currentNode$;
+    this.inventory$ = this.storyService.inventory$;
+    this.hp$ = this.storyService.hp$;
   }
 
   // Verifica se il giocatore soddisfa i requisiti della scelta
   canChoose(requiredItem?: string): boolean {
-    if (!requiredItem) return true; // Scelta libera
-    return this.story.hasItem(requiredItem);
+    if (!requiredItem) return true; 
+    return this.storyService.hasItem(requiredItem);
   }
 
   // Gestisce il click del giocatore su una scelta
   makeChoice(nextNodeId: string): void {
-    this.story.goToNode(nextNodeId);
+    this.storyService.goToNode(nextNodeId);
   }
 
   // Gestisce il click sul bottone di riavvio
   restart(): void {
-    this.story.restartGame();
+    this.storyService.restartGame();
   }
 }

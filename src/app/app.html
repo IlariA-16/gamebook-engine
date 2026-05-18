@@ -8,20 +8,29 @@
         <h2>{{ node.title }}</h2>
       }
 
-      <!-- BARRA DELL'INVENTARIO -->
-      <div class="inventory-bar">
-        <span class="inventory-title">🎒 Inventario:</span>
-        @if (inventory$ | async; as items) {
-          @if (items.length > 0) {
-            <div class="inventory-items">
-              @for (item of items; track item) {
-                <span class="inventory-badge">✨ {{ item }}</span>
-              }
-            </div>
-          } @else {
-            <span class="inventory-empty">Nessun oggetto</span>
+      <!-- BARRA DELLO STATO (HP + INVENTARIO) -->
+      <div class="status-bar">
+        <!-- Sezione Punti Vita -->
+        <div class="hp-section">
+          <span class="status-title">❤️ Salute:</span>
+          <span class="hp-value">{{ hp$ | async }} / 10 HP</span>
+        </div>
+        
+        <!-- Sezione Inventario -->
+        <div class="inventory-section">
+          <span class="status-title">🎒 Oggetti:</span>
+          @if (inventory$ | async; as items) {
+            @if (items.length > 0) {
+              <div class="inventory-items">
+                @for (item of items; track item) {
+                  <span class="inventory-badge">✨ {{ item }}</span>
+                }
+              </div>
+            } @else {
+              <span class="inventory-empty">Vuoto</span>
+            }
           }
-        }
+        </div>
       </div>
     </header>
 

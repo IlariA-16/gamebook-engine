@@ -15,24 +15,27 @@
     "title": "Il Meccanismo del Portone",
     "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, tre pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
     "choices": [
-      { "text": "Premi il pulsante 3", "nextNodeId": "morte_patto" },
+      { "text": "Premi il pulsante 3", "nextNodeId": "goblin_attacco" },
       { "text": "Premi il pulsante 7", "nextNodeId": "atrio_principale" },
-      { "text": "Premi il pulsante 9", "nextNodeId": "morte_patto" },
+      { "text": "Premi il pulsante 9", "nextNodeId": "goblin_attacco" },
       { "text": "Scappa e nasconditi nelle Fogne", "nextNodeId": "fogne_ingresso" }
     ],
     "isEnding": false
   },
   {
-    "id": "morte_patto",
-    "title": "Catturato dalla Guardia",
-    "text": "Sbagli combinazione. Un allarme sonoro rimbomba nella vallata. Una freccia scoccata dai goblin della ronda ti colpisce alla schiena prima che tu possa fuggire. La tua avventura finisce qui.",
-    "choices": [],
-    "isEnding": true
+    "id": "goblin_attacco",
+    "title": "Imboscata Goblin",
+    "text": "Sbagli combinazione e un piccolo allarme scatta. Una freccia scoccata dalle ronde goblin ti colpisce alla spalla prima che tu possa scappare! Perdi 4 HP. Riesci comunque a rotolare dentro le fogne per salvarti.",
+    "choices": [
+      { "text": "Avanza dolorante nelle Fogne", "nextNodeId": "fogne_ingresso" }
+    ],
+    "isEnding": false,
+    "hpModifier": -4
   },
   {
     "id": "atrio_principale",
     "title": "L'Atrio del Re",
-    "text": "Il meccanismo scatta e il portone si spalanca, richiudendosi subito dopo di te. Ti trovi nell'Atrio del Re. Colonne di marmo nero sorreggono un soffitto affrescato. Al centro della stanza c'è una statua del Re che tiene in mano una spada di pietra. Noti due uscite: una sontuosa scalinata dorata che sale ai piani superiori e una porta di legno borchiata che scende verso le prigioni.",
+    "text": "Il meccanismo scatta e il portone si spalanca, richiudendosi subito dopo di te. Ti trovi nell'Atrio del Re. Colonne di marmo nero sorreggono un soffitto affrescato. Noti due uscite: una sontuosa scalinata dorata che sale ai piani superiori e una porta di legno borchiata che scende verso le prigioni.",
     "choices": [
       { "text": "Sali la scalinata dorata verso i piani superiori", "nextNodeId": "piani_superiori" },
       { "text": "Apri la porta borchiata e scendi nelle prigioni", "nextNodeId": "prigioni_sotto" }
@@ -42,7 +45,7 @@
   {
     "id": "fogne_ingresso",
     "title": "Il Labirinto di Fango",
-    "text": "Ti cali nel condotto. L'odore è nauseabondo e l'acqua ti arriva alle ginocchia. Avanzi al buio finché non trovi un bivio idraulico: a sinistra l'acqua scorre rapida verso una cascata sotterranea, a destra il tunnel si stringe e risale verso l'alto, sbarrato da una vecchia botola di legno marcio.",
+    "text": "Ti cali nel condotto. L'odore è nauseabondo e l'acqua ti arriva alle knee. Avanzi al buio finché non trovi un bivio idraulico: a sinistra l'acqua scorre rapida verso una cascata sotterranea, a destra il tunnel si stringe e risale verso l'alto, sbarrato da una vecchia botola di legno marcio.",
     "choices": [
       { "text": "Segui il flusso dell'acqua a sinistra", "nextNodeId": "cascata_fogne" },
       { "text": "Sali verso la botola di legno a destra", "nextNodeId": "prigioni_sotto" }
@@ -59,12 +62,24 @@
   {
     "id": "prigioni_sotto",
     "title": "Le Celle dell'Oblio",
-    "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano sta dormendo su una sedia, con un mazzo di chiavi lucenti appeso alla cintura. Dietro di lui c'è la porta della tesoreria inferiore.",
+    "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano sta dormendo su una sedia. Vicino a te, una misteriosa fonte d'acqua magica emana calore.",
     "choices": [
+      { "text": "Bevi dall'acqua magica per rinvigorirti", "nextNodeId": "fontana_cura" },
       { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "orco_chiavi" },
       { "text": "Evita l'orco e prendi un passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
     ],
     "isEnding": false
+  },
+  {
+    "id": "fontana_cura",
+    "title": "Fonte Rigenerante",
+    "text": "Bevi l'acqua della fonte. Un calore benefico si diffonde nel tuo corpo, rimarginando le tue ferite. Recuperi 3 HP! Ora devi decidere come superare questo piano.",
+    "choices": [
+      { "text": "Sfila le chiavi all'orco con destrezza", "nextNodeId": "orco_chiavi" },
+      { "text": "Prendi il passaggio d'aerazione che sale", "nextNodeId": "atrio_principale" }
+    ],
+    "isEnding": false,
+    "hpModifier": 3
   },
   {
     "id": "orco_chiavi",
@@ -81,16 +96,19 @@
       { "text": "Entra nella serra di vetro", "nextNodeId": "serra_alchimia" },
       { "text": "Ispeziona il mausoleo di pietra bianca", "nextNodeId": "mausoleo_cripta" },
       { "text": "Usa il Diserbante Acido sulla pianta carnivora", "nextNodeId": "piani_superiori", "requiredItem": "Diserbante Acido" },
-      { "text": "Tenta di superare la pianta carnivora correndo", "nextNodeId": "morte_pianta" }
+      { "text": "Tenta di superare la pianta carnivora correndo", "nextNodeId": "pianta_attacco" }
     ],
     "isEnding": false
   },
   {
-    "id": "morte_pianta",
-    "title": "Nelle Fauci della Natura",
-    "text": "La pianta è più veloce di quanto pensassi. I suoi viticci ti avvolgono le caviglie e ti trascinano nella sua enorme bocca acida. Diventi ottimo fertilizzante.",
-    "choices": [],
-    "isEnding": true
+    "id": "pianta_attacco",
+    "title": "Morsa di Rovi",
+    "text": "Tenti lo scatto, ma i viticci della pianta carnivora ti avvolgono le gambe stritolandoti l'armatura. Subisci 5 HP di danno prima di salvarti nel Mausoleo!",
+    "choices": [
+      { "text": "Rifugiati ferito dentro il Mausoleo", "nextNodeId": "mausoleo_cripta" }
+    ],
+    "isEnding": false,
+    "hpModifier": -5
   },
   {
     "id": "serra_alchimia",
