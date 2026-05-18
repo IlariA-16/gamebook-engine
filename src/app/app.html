@@ -1,0 +1,42 @@
+<div class="game-container">
+  <!-- Aspetta che il JSON sia caricato prima di mostrare la storia -->
+  @if (currentNode$ | async; as node) {
+    
+    <header class="game-header">
+      <h1>Gamebook</h1>
+      @if (node.title) {
+        <h2>{{ node.title }}</h2>
+      }
+    </header>
+
+    <main class="game-content">
+      <!-- Testo principale del bivio corrente -->
+      <p class="story-text">{{ node.text }}</p>
+
+      <!-- Elenco delle scelte disponibili se non è un finale -->
+      @if (!node.isEnding) {
+        <div class="choices-container">
+          @for (choice of node.choices; track choice.nextNodeId) {
+            <button class="btn-choice" (click)="makeChoice(choice.nextNodeId)">
+              {{ choice.text }}
+            </button>
+          }
+        </div>
+      } @else {
+        <!-- Schermata di Game Over o Vittoria -->
+        <div class="ending-container">
+          <div class="badge-ending">FINE DELL'AVVENTURA</div>
+          <button class="btn-restart" (click)="restart()">
+            🔄 Gioca di Nuovo
+          </button>
+        </div>
+      }
+    </main>
+
+  } @else {
+    <!-- Schermata di caricamento iniziale -->
+    <div class="loading">
+      <p>Caricamento della storia in corso...</p>
+    </div>
+  }
+</div>
