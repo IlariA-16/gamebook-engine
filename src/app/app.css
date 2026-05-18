@@ -36,6 +36,15 @@
   margin: 0 0 0.75rem 0;
 }
 
+.game-header h1 span {
+  font-size: 0.85rem;
+  color: #a88453;
+  font-style: italic;
+  margin-left: 5px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .game-header h2 {
   font-size: 2.2rem;
   font-weight: 500;
@@ -45,6 +54,60 @@
   display: inline-block;
   border-bottom: 2px solid #c5a880;
   font-family: 'Georgia', serif;
+}
+
+/* SELEZIONE CLASSI RPG */
+.class-selection-container {
+  margin-top: 1.5rem;
+}
+
+.class-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.class-card {
+  background-color: #fdfbf7;
+  border: 1px solid #e6dacb;
+  padding: 1.75rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(139, 119, 101, 0.04);
+}
+
+.class-card h3 {
+  font-size: 1.4rem;
+  color: #1a1512;
+  margin: 0 0 0.5rem 0;
+}
+
+.class-card p {
+  font-size: 1.05rem;
+  color: #5c4d3c;
+  line-height: 1.5;
+  margin: 0 0 1.25rem 0;
+}
+
+.btn-choice-center {
+  background-color: #ffffff;
+  color: #a88453;
+  border: 1px solid #c5a880;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: inherit;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-choice-center:hover {
+  color: #ffffff;
+  background-color: #a88453;
+  border-color: #a88453;
+  box-shadow: 0 4px 12px rgba(168, 132, 83, 0.2);
 }
 
 /* BARRA DELLO STATO (HP + INVENTARIO) */
@@ -355,7 +418,7 @@
   color: #8c7d70;
 }
 
-/* DIARIO DI BORDO (FOOTER CRONOLOGIA) - AGGIUNTO */
+/* DIARIO DI BORDO (FOOTER CRONOLOGIA) */
 .game-footer {
   margin-top: 3.5rem;
   border-top: 1px dashed #e6dacb;

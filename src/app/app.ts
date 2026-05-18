@@ -15,16 +15,22 @@ export class AppComponent {
   hp$;
   lastDiceRoll$;
   combatLog$;
-  history$; // <-- DICHIARA LA CRONOLOGIA QUI
+  history$;
+  selectedClass$; // <-- AGGIUNGI QUESTO PER RISOLVERE L'ERRORE IN APP.HTML
 
-  // Impostiamo public per consentire all'HTML di accedere a activeCombat
   constructor(public storyService: StoryService) {
     this.currentNode$ = this.storyService.currentNode$;
     this.inventory$ = this.storyService.inventory$;
     this.hp$ = this.storyService.hp$;
     this.lastDiceRoll$ = this.storyService.lastDiceRoll$;
     this.combatLog$ = this.storyService.combatLog$;
-    this.history$ = this.storyService.history$; // <-- AGGANCIA LA CRONOLOGIA AL SERVIZIO
+    this.history$ = this.storyService.history$;
+    this.selectedClass$ = this.storyService.selectedClass$; // <-- AGGANCIA LA CLASSE AL SERVIZIO
+  }
+
+  // <-- AGGIUNGI QUESTA FUNZIONE PER IL CLICK SULLE SCHEDE
+  chooseClass(className: string): void {
+    this.storyService.selectClass(className);
   }
 
   // Verifica se il giocatore soddisfa i requisiti della scelta

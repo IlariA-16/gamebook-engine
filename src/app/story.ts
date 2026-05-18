@@ -10,7 +10,8 @@ export class StoryService {
   private storyNodes: StoryNode[] = [];
   private inventory: string[] = [];
   private currentHp: number = 10;
-  private history: string[] = []; // Array interno per lo storico dei capitoli visitati
+  private maxHp: number = 10; // Diventa dinamico in base alla classe scelta
+  private history: string[] = [];
   
   public activeCombat: EnemyCombat | null = null;
   private combatLogSubject = new BehaviorSubject<string>('');
@@ -28,9 +29,12 @@ export class StoryService {
   private lastDiceRollSubject = new BehaviorSubject<number>(-1);
   public lastDiceRoll$: Observable<number> = this.lastDiceRollSubject.asObservable();
 
-  // Gestisce lo stato della cronologia per l'interfaccia utente
   private historySubject = new BehaviorSubject<string[]>([]);
   public history$: Observable<string[]> = this.historySubject.asObservable();
+
+  // Traccia la classe selezionata
+  private selectedClassSubject = new BehaviorSubject<string>('');
+  public selectedClass$: Observable<string> = this.selectedClassSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.loadStory();
@@ -44,6 +48,30 @@ export class StoryService {
       },
       error: (err) => console.error('Errore nel caricamento della storia:', err)
     });
+  }
+
+  // Applica i bonus della classe scelta
+  public selectClass(className: string): void {
+    this.selectedClassSubject.next(className);
+    this.inventory = [];
+    this.history = [];
+    
+    if (className === 'Guerriero') {
+      this.maxHp = 14;
+      this.currentHp = 14;
+    } else {
+      this.maxHp = 10;
+      this.currentHp = 10;
+    }
+
+    if (className === 'Mago') {
+      this.inventory.push('Pergamena del Sole');
+    }
+
+    this.inventorySubject.next([...this.inventory]);
+    this.hpSubject.next(this.currentHp);
+    this.historySubject.next([]);
+    this.goToNode('intro');
   }
 
   public goToNode(nodeId: string): void {
@@ -67,7 +95,6 @@ export class StoryService {
         this.modifyHp(targetNode.hpModifier, targetNode.title || 'Pericolo');
       }
 
-      // Registra il titolo del capitolo nella cronologia, evitando la schermata fissa di morte
       if (targetNode.title && targetNode.id !== 'morte_hp') {
         this.history.push(targetNode.title);
         this.historySubject.next([...this.history]);
@@ -106,7 +133,7 @@ export class StoryService {
 
   private modifyHp(amount: number, source: string): void {
     this.currentHp += amount;
-    if (this.currentHp > 10) this.currentHp = 10;
+    if (this.currentHp > this.maxHp) this.currentHp = this.maxHp;
     
     if (this.currentHp <= 0) {
       this.currentHp = 0;
@@ -118,7 +145,13 @@ export class StoryService {
   }
 
   public rollDice(challenge: { targetScore: number; successNodeId: string; failureNodeId: string }): void {
-    const roll = Math.floor(Math.random() * 6) + 1;
+    let roll = Math.floor(Math.random() * 6) + 1;
+    
+    // Il Ladro ottiene +2 fisso al tiro di dado
+    if (this.selectedClassSubject.value === 'Ladro') {
+      roll += 2;
+    }
+    
     this.lastDiceRollSubject.next(roll);
     setTimeout(() => {
       if (roll >= challenge.targetScore) this.goToNode(challenge.successNodeId);
@@ -143,15 +176,17 @@ export class StoryService {
   }
 
   public restartGame(): void {
+    this.selectedClassSubject.next(''); // Forza la scelta della classe a inizio partita
     this.inventory = [];
     this.currentHp = 10;
-    this.history = []; // Svuota lo storico dei passi
+    this.maxHp = 10;
+    this.history = [];
     this.activeCombat = null;
     this.inventorySubject.next([]);
     this.hpSubject.next(this.currentHp);
-    this.historySubject.next([]); // Resetta la UI
+    this.historySubject.next([]);
     this.lastDiceRollSubject.next(-1);
     this.combatLogSubject.next('');
-    this.goToNode('intro');
+    this.currentNodeSubject.next(null);
   }
 }

@@ -1,137 +1,148 @@
 <div class="game-container">
-  <!-- Aspetta che il JSON sia caricato prima di mostrare la storia -->
-  @if (currentNode$ | async; as node) {
+  
+  @if (selectedClass$ | async; as classe) {
     
-    <header class="game-header">
-      <h1>Gamebook</h1>
-      @if (node.title) {
-        <h2>{{ node.title }}</h2>
-      }
+    <!-- INTERFACCIA DI GIOCO STANDARD (Mostrata solo se la classe è già stata scelta) -->
+    @if (currentNode$ | async; as node) {
+      <header class="game-header">
+        <h1>Gamebook — <span>{{ classe }}</span></h1>
+        @if (node.title) {
+          <h2>{{ node.title }}</h2>
+        }
 
-      <!-- BARRA DELLO STATO (HP + INVENTARIO) -->
-      <div class="status-bar">
-        <!-- Sezione Punti Vita -->
-        <div class="hp-section">
-          <span class="status-title">❤️ Salute:</span>
-          <span class="hp-value">{{ hp$ | async }} / 10 HP</span>
-        </div>
-        
-        <!-- Sezione Inventario -->
-        <div class="inventory-section">
-          <span class="status-title">🎒 Oggetti:</span>
-          @if (inventory$ | async; as items) {
-            @if (items.length > 0) {
-              <div class="inventory-items">
-                @for (item of items; track item) {
-                  <span class="inventory-badge">✨ {{ item }}</span>
-                }
-              </div>
-            } @else {
-              <span class="inventory-empty">Vuoto</span>
-            }
-          }
-        </div>
-      </div>
-    </header>
-
-    <main class="game-content">
-      <!-- Testo principale del bivio corrente -->
-      <p class="story-text">{{ node.text }}</p>
-
-      <!-- INTERFACCIA DI COMBATTIMENTO A TURNI -->
-      @if (storyService.activeCombat; as enemy) {
-        <div class="combat-container">
-          <div class="enemy-info-box">
-            <span class="enemy-name">⚔️ {{ enemy.name }}</span>
-            <span class="enemy-hp">🩸 HP Nemico: {{ enemy.hp }}</span>
+        <div class="status-bar">
+          <div class="hp-section">
+            <span class="status-title">❤️ Salute:</span>
+            <span class="hp-value">{{ hp$ | async }} HP</span>
           </div>
-
-          <!-- Log dei Turni (Colpi sferrati e ricevuti) -->
-          @if (combatLog$ | async; as log) {
-            @if (log) {
-              <div class="combat-log-box">{{ log }}</div>
+          
+          <div class="inventory-section">
+            <span class="status-title">🎒 Oggetti:</span>
+            @if (inventory$ | async; as items) {
+              @if (items.length > 0) {
+                <div class="inventory-items">
+                  @for (item of items; track item) {
+                    <span class="inventory-badge">✨ {{ item }}</span>
+                  }
+                </div>
+              } @else {
+                <span class="inventory-empty">Vuoto</span>
+              }
             }
-          }
-
-          @if (enemy.hp > 0 && (hp$ | async)! > 0) {
-            <button class="btn-attack" (click)="onAttack()">
-              ⚔️ Sferra un Attacco
-            </button>
-          }
-        </div>
-      }
-
-      <!-- SE C'È UNA SFIDA CON I DADI STANDARD -->
-      @else if (node.diceChallenge) {
-        <div class="dice-challenge-container">
-          <div class="challenge-info">
-            🎲 <strong>SFIDA DEL DESTINO:</strong> Devi fare almeno <strong>{{ node.diceChallenge.targetScore }}</strong> per superare la prova!
           </div>
+        </div>
+      </header>
 
-          @if ((lastDiceRoll$ | async) === -1) {
-            <button class="btn-dice-roll" (click)="onRollDice(node.diceChallenge)">
-              🎲 Lancia il Dado
-            </button>
-          } @else {
-            <div class="dice-result-box animate-roll">
-              <span class="dice-number">🎲 {{ lastDiceRoll$ | async }}</span>
-              <p class="rolling-text">Il destino sta decidendo...</p>
+      <main class="game-content">
+        <p class="story-text">{{ node.text }}</p>
+
+        @if (storyService.activeCombat; as enemy) {
+          <div class="combat-container">
+            <div class="enemy-info-box">
+              <span class="enemy-name">⚔️ {{ enemy.name }}</span>
+              <span class="enemy-hp">🩸 HP Nemico: {{ enemy.hp }}</span>
             </div>
-          }
-        </div>
-      } 
-      
-      @else if (!node.isEnding) {
-        <!-- Elenco delle scelte standard disponibili se non è un finale -->
-        <div class="choices-container">
-          @for (choice of node.choices; track choice.nextNodeId) {
-            <button 
-              class="btn-choice" 
-              [disabled]="!canChoose(choice.requiredItem)"
-              (click)="makeChoice(choice.nextNodeId)">
-              
-              {{ choice.text }}
-              
-              @if (choice.requiredItem && !canChoose(choice.requiredItem)) {
-                <span class="required-tag">🔒 (Richiede: {{ choice.requiredItem }})</span>
-              }
-            </button>
-          }
-        </div>
-      } @else {
-        <!-- Schermata di Game Over o Vittoria -->
-        <div class="ending-container">
-          <div class="badge-ending">FINE DELL'AVVENTURA</div>
-          <button class="btn-restart" (click)="restart()">
-            🔄 Gioca di Nuovo
-          </button>
-        </div>
-      }
-    </main>
 
-    <!-- DIARIO DI BORDO (CRONOLOGIA) -->
-    @if (history$ | async; as steps) {
-      @if (steps.length > 0) {
-        <footer class="game-footer">
-          <div class="history-title">📜 Diario di Bordo:</div>
-          <div class="history-trail">
-            @for (step of steps; track step; let last = $last) {
-              <span class="history-step" [class.current-step]="last">
-                {{ step }}
-              </span>
-              @if (!last) {
-                <span class="history-separator">➔</span>
+            @if (combatLog$ | async; as log) {
+              @if (log) {
+                <div class="combat-log-box">{{ log }}</div>
               }
             }
+
+            @if (enemy.hp > 0 && (hp$ | async)! > 0) {
+              <button class="btn-attack" (click)="onAttack()">⚔️ Sferra un Attacco</button>
+            }
           </div>
-        </footer>
+        }
+
+        @else if (node.diceChallenge) {
+          <div class="dice-challenge-container">
+            <div class="challenge-info">
+              🎲 <strong>SFIDA DEL DESTINO:</strong> Devi fare almeno <strong>{{ node.diceChallenge.targetScore }}</strong> per superare la prova!
+              @if (classe === 'Ladro') {
+                <span style="color: #a88453; display: block; margin-top: 5px;">(Tratto Ladro attivo: +2 al risultato finale)</span>
+              }
+            </div>
+
+            @if ((lastDiceRoll$ | async) === -1) {
+              <button class="btn-dice-roll" (click)="onRollDice(node.diceChallenge)">🎲 Lancia il Dado</button>
+            } @else {
+              <div class="dice-result-box animate-roll">
+                <span class="dice-number">🎲 {{ lastDiceRoll$ | async }}</span>
+                <p class="rolling-text">Il destino sta decidendo...</p>
+              </div>
+            }
+          </div>
+        } 
+        
+        @else if (!node.isEnding) {
+          <div class="choices-container">
+            @for (choice of node.choices; track choice.nextNodeId) {
+              <button class="btn-choice" [disabled]="!canChoose(choice.requiredItem)" (click)="makeChoice(choice.nextNodeId)">
+
+                {{ choice.text }}
+                @if (choice.requiredItem && !canChoose(choice.requiredItem)) {
+                  <span class="required-tag">🔒 (Richiede: {{ choice.requiredItem }})</span>
+                }
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="ending-container">
+            <div class="badge-ending">FINE DELL'AVVENTURA</div>
+            <button class="btn-restart" (click)="restart()">🔄 Torna al Menù</button>
+          </div>
+        }
+      </main>
+
+      @if (history$ | async; as steps) {
+        @if (steps.length > 0) {
+          <footer class="game-footer">
+            <div class="history-title">📜 Diario di Bordo:</div>
+            <div class="history-trail">
+              @for (step of steps; track step; let last = $last) {
+                <span class="history-step" [class.current-step]="last">{{ step }}</span>
+                @if (!last) { <span class="history-separator">➔</span> }
+              }
+            </div>
+          </footer>
+        }
       }
+    } @else {
+      <div class="loading"><p>Caricamento del racconto in corso...</p></div>
     }
 
   } @else {
-    <!-- Schermata di caricamento iniziale -->
-    <div class="loading">
-      <p>Caricamento della storia in corso...</p>
-    </div>
+    
+    <!-- SCHERMATA DI SCELTA DELLA CLASSE (Mostrata come fallback iniziale) -->
+    <header class="game-header">
+      <h1>Gamebook</h1>
+      <h2>Scegli il tuo Eroe</h2>
+    </header>
+    
+    <main class="class-selection-container">
+      <p class="story-text">Prima di varcare la soglia della Fortezza di Smeraldo, seleziona la classe del tuo personaggio. Ognuna possiede tratti unici che cambieranno il tuo destino.</p>
+      
+      <div class="class-cards">
+        <div class="class-card">
+          <h3>🛡️ Guerriero</h3>
+          <p>Un combattente robusto con armatura pesante. Inizia l'avventura con ben <strong>14 HP</strong> massimi.</p>
+          <button class="btn-choice-center" (click)="chooseClass('Guerriero')">Seleziona Guerriero</button>
+        </div>
+        
+        <div class="class-card">
+          <h3>🪄 Mago</h3>
+          <p>Un maestro delle arti occulte. Inizia il viaggio possedendo già la <strong>Pergamena del Sole</strong>.</p>
+          <button class="btn-choice-center" (click)="chooseClass('Mago')">Seleziona Mago</button>
+        </div>
+        
+        <div class="class-card">
+          <h3>🥷 Ladro</h3>
+          <p>Agile, silenzioso e fortunato. Riceve un bonus permanente di <strong>+2 a tutti i lanci di dadi</strong>.</p>
+          <button class="btn-choice-center" (click)="chooseClass('Ladro')">Seleziona Ladro</button>
+        </div>
+      </div>
+    </main>
+
   }
 </div>
