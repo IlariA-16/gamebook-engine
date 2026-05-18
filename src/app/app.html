@@ -38,27 +38,50 @@
       <!-- Testo principale del bivio corrente -->
       <p class="story-text">{{ node.text }}</p>
 
-      <!-- SE C'È UNA SFIDA CON I DADI -->
-      @if (node.diceChallenge) {
+      <!-- INTERFACCIA DI COMBATTIMENTO A TURNI -->
+      @if (storyService.activeCombat; as enemy) {
+        <div class="combat-container">
+          <div class="enemy-info-box">
+            <span class="enemy-name">⚔️ {{ enemy.name }}</span>
+            <span class="enemy-hp">🩸 HP Nemico: {{ enemy.hp }}</span>
+          </div>
+
+          <!-- Log dei Turni (Colpi sferrati e ricevuti) -->
+          @if (combatLog$ | async; as log) {
+            @if (log) {
+              <div class="combat-log-box">{{ log }}</div>
+            }
+          }
+
+          @if (enemy.hp > 0 && (hp$ | async)! > 0) {
+            <button class="btn-attack" (click)="onAttack()">
+              ⚔️ Sferra un Attacco
+            </button>
+          }
+        </div>
+      }
+
+      <!-- SE C'È UNA SFIDA CON I DADI STANDARD -->
+      @else if (node.diceChallenge) {
         <div class="dice-challenge-container">
           <div class="challenge-info">
             🎲 <strong>SFIDA DEL DESTINO:</strong> Devi fare almeno <strong>{{ node.diceChallenge.targetScore }}</strong> per superare la prova!
           </div>
 
           @if ((lastDiceRoll$ | async) === -1) {
-            <!-- Bottone di lancio se non ha ancora tirato il dado -->
             <button class="btn-dice-roll" (click)="onRollDice(node.diceChallenge)">
               🎲 Lancia il Dado
             </button>
           } @else {
-            <!-- Mostra il risultato del dado con animazione -->
             <div class="dice-result-box animate-roll">
               <span class="dice-number">🎲 {{ lastDiceRoll$ | async }}</span>
               <p class="rolling-text">Il destino sta decidendo...</p>
             </div>
           }
         </div>
-      } @else if (!node.isEnding) {
+      } 
+      
+      @else if (!node.isEnding) {
         <!-- Elenco delle scelte standard disponibili se non è un finale -->
         <div class="choices-container">
           @for (choice of node.choices; track choice.nextNodeId) {

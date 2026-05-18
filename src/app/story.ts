@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { StoryNode } from './story.model';
+import { StoryNode, EnemyCombat } from './story.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,11 @@ export class StoryService {
   private inventory: string[] = [];
   private currentHp: number = 10;
   
+  // NUOVO: Tracciamento del combattimento attivo e log dei turni
+  public activeCombat: EnemyCombat | null = null;
+  private combatLogSubject = new BehaviorSubject<string>('');
+  public combatLog$: Observable<string> = this.combatLogSubject.asObservable();
+
   private currentNodeSubject = new BehaviorSubject<StoryNode | null>(null);
   public currentNode$: Observable<StoryNode | null> = this.currentNodeSubject.asObservable();
 
@@ -20,7 +25,6 @@ export class StoryService {
   private hpSubject = new BehaviorSubject<number>(10);
   public hp$: Observable<number> = this.hpSubject.asObservable();
 
-  // Gestisce il risultato del dado (-1 significa nessun lancio effettuato)
   private lastDiceRollSubject = new BehaviorSubject<number>(-1);
   public lastDiceRoll$: Observable<number> = this.lastDiceRollSubject.asObservable();
 
@@ -34,17 +38,22 @@ export class StoryService {
         this.storyNodes = nodes;
         this.restartGame();
       },
-      error: (err) => {
-        console.error('Errore nel caricamento della storia:', err);
-      }
+      error: (err) => console.error('Errore nel caricamento della storia:', err)
     });
   }
 
   public goToNode(nodeId: string): void {
     const targetNode = this.storyNodes.find(node => node.id === nodeId);
     if (targetNode) {
-      // Resetta il dado ogni volta che si cambia capitolo
       this.lastDiceRollSubject.next(-1);
+      this.combatLogSubject.next('');
+
+      // Se il nodo ha un combattimento impostato nel JSON, lo attiva
+      if (targetNode.combat) {
+        this.activeCombat = { ...targetNode.combat };
+      } else {
+        this.activeCombat = null;
+      }
 
       if (targetNode.itemToGive && !this.inventory.includes(targetNode.itemToGive)) {
         this.inventory.push(targetNode.itemToGive);
@@ -52,16 +61,7 @@ export class StoryService {
       }
 
       if (targetNode.hpModifier) {
-        this.currentHp += targetNode.hpModifier;
-        if (this.currentHp > 10) this.currentHp = 10;
-        
-        if (this.currentHp <= 0) {
-          this.currentHp = 0;
-          this.hpSubject.next(this.currentHp);
-          this.triggerDeathNode(targetNode.title || 'Pericolo');
-          return;
-        }
-        this.hpSubject.next(this.currentHp);
+        this.modifyHp(targetNode.hpModifier, targetNode.title || 'Pericolo');
       }
       
       this.currentNodeSubject.next(targetNode);
@@ -70,25 +70,64 @@ export class StoryService {
     }
   }
 
-  // Lancia il dado ed esegue il re-indirizzamento dopo 1.2 secondi
+  // NUOVO: Gestisce l'attacco a turni dell'RPG
+  public executeCombatTurn(): void {
+    if (!this.activeCombat) return;
+
+    // 1. Turno del Giocatore: lancia un dado per calcolare il danno sferrato
+    const playerRoll = Math.floor(Math.random() * 6) + 1;
+    this.lastDiceRollSubject.next(playerRoll);
+    this.activeCombat.hp -= playerRoll;
+
+    let log = `⚔️ Attacchi ${this.activeCombat.name}: lanci il dado e infliggi ${playerRoll} danni!`;
+
+    // Controlla se il nemico è morto
+    if (this.activeCombat.hp <= 0) {
+      this.activeCombat.hp = 0;
+      this.combatLogSubject.next(`${log}\n🏆 Hai sconfitto il nemico!`);
+      setTimeout(() => this.goToNode(this.activeCombat!.successNodeId), 1500);
+      return;
+    }
+
+    // 2. Turno del Mostro: contrattacca e toglie HP fissi al giocatore
+    this.modifyHp(-this.activeCombat.damage, this.activeCombat.name);
+    log += `\n💥 Il ${this.activeCombat.name} risponde al colpo e ti infligge ${this.activeCombat.damage} danni!`;
+    
+    if (this.currentHp > 0) {
+      log += `\n${this.activeCombat.name} resiste con ${this.activeCombat.hp} HP rimasti.`;
+    }
+    this.combatLogSubject.next(log);
+  }
+
+  // Helper centralizzato per modificare gli HP
+  private modifyHp(amount: number, source: string): void {
+    this.currentHp += amount;
+    if (this.currentHp > 10) this.currentHp = 10;
+    
+    if (this.currentHp <= 0) {
+      this.currentHp = 0;
+      this.hpSubject.next(this.currentHp);
+      this.triggerDeathNode(source);
+      return;
+    }
+    this.hpSubject.next(this.currentHp);
+  }
+
   public rollDice(challenge: { targetScore: number; successNodeId: string; failureNodeId: string }): void {
     const roll = Math.floor(Math.random() * 6) + 1;
     this.lastDiceRollSubject.next(roll);
-
     setTimeout(() => {
-      if (roll >= challenge.targetScore) {
-        this.goToNode(challenge.successNodeId);
-      } else {
-        this.goToNode(challenge.failureNodeId);
-      }
+      if (roll >= challenge.targetScore) this.goToNode(challenge.successNodeId);
+      else this.goToNode(challenge.failureNodeId);
     }, 1200);
   }
 
-  private triggerDeathNode(scenaMorte: string): void {
+  private triggerDeathNode(source: string): void {
+    this.activeCombat = null;
     const deathNode: StoryNode = {
       id: 'morte_hp',
       title: 'La Fine del Viaggio',
-      text: `Durante gli eventi accaduti in "${scenaMorte}", le tue ferite si rivelano troppo gravi. Ti accasci al suolo privo di forze. La tua salute è arrivata a 0.`,
+      text: `Durante lo scontro o l'evento legato a "${source}", le tue ferite si rivelano troppo gravi. Cadi a terra privo di forze.`,
       choices: [],
       isEnding: true
     };
@@ -102,9 +141,11 @@ export class StoryService {
   public restartGame(): void {
     this.inventory = [];
     this.currentHp = 10;
+    this.activeCombat = null;
     this.inventorySubject.next([]);
     this.hpSubject.next(this.currentHp);
     this.lastDiceRollSubject.next(-1);
+    this.combatLogSubject.next('');
     this.goToNode('intro');
   }
 }

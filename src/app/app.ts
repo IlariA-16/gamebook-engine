@@ -13,13 +13,16 @@ export class AppComponent {
   currentNode$;
   inventory$;
   hp$;
-  lastDiceRoll$; // <-- AGGIUNGI QUESTO PER IL DADO
+  lastDiceRoll$;
+  combatLog$; // <-- AGGIUNGI QUESTO PER IL COMBATTIMENTO
 
-  constructor(private storyService: StoryService) {
+  // Impostiamo public per consentire all'HTML di accedere a activeCombat
+  constructor(public storyService: StoryService) {
     this.currentNode$ = this.storyService.currentNode$;
     this.inventory$ = this.storyService.inventory$;
     this.hp$ = this.storyService.hp$;
-    this.lastDiceRoll$ = this.storyService.lastDiceRoll$; // <-- INIZIALIZZA IL DADO
+    this.lastDiceRoll$ = this.storyService.lastDiceRoll$;
+    this.combatLog$ = this.storyService.combatLog$; // <-- INIZIALIZZA IL LOG DI BATTAGLIA
   }
 
   // Verifica se il giocatore soddisfa i requisiti della scelta
@@ -33,9 +36,14 @@ export class AppComponent {
     this.storyService.goToNode(nextNodeId);
   }
 
-  // NUOVO: Gestisce il lancio del dado passandogli la sfida corrente
+  // Gestisce il lancio del dado passandogli la sfida corrente
   onRollDice(challenge: any): void {
     this.storyService.rollDice(challenge);
+  }
+
+  // NUOVO: Gestisce il click sul pulsante d'attacco a turni
+  onAttack(): void {
+    this.storyService.executeCombatTurn();
   }
 
   // Gestisce il click sul bottone di riavvio

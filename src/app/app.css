@@ -118,6 +118,74 @@
   text-align: justify;
 }
 
+/* INTERFACCIA COMBATTIMENTO RPG */
+.combat-container {
+  background-color: #fffdf9;
+  border: 2px solid #c5a880;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(168, 132, 83, 0.08);
+}
+
+.enemy-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0e6da;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.enemy-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1a1512;
+}
+
+.enemy-hp {
+  font-size: 1.1rem;
+  color: #c92a2a;
+  font-weight: bold;
+}
+
+.combat-log-box {
+  background-color: #fdfbf7;
+  border: 1px solid #e6dacb;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #3d332a;
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+  font-style: italic;
+}
+
+.btn-attack {
+  display: block;
+  width: 100%;
+  background-color: #c92a2a;
+  color: #ffffff;
+  border: none;
+  padding: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: bold;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(201, 42, 42, 0.2);
+}
+
+.btn-attack:hover {
+  background-color: #a61e1e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(201, 42, 42, 0.3);
+}
+
 /* SFIDA CON I DADI */
 .dice-challenge-container {
   background-color: #fdfbf7;
@@ -274,12 +342,11 @@
 
 .btn-restart:hover {
   color: #ffffff;
-  background-color: #a88453; /* Diventa bronzo/oro all'hover, come i bivi */
+  background-color: #a88453;
   border-color: #a88453;
   box-shadow: 0 4px 12px rgba(168, 132, 83, 0.2);
   transform: translateY(-1px);
 }
-
 
 .loading {
   text-align: center;
