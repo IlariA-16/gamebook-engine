@@ -1,0 +1,202 @@
+[
+  {
+    "id": "intro",
+    "title": "La Fortezza di Smeraldo",
+    "text": "Dopo settimane di viaggio nella Terra Desolata, ti trovi di fronte all'immensa Fortezza di Smeraldo, l'antico bastione del Re Folle. La pioggia batte incessante sull'armatura. Davanti a te si aprono three vie d'accesso: il monumentale Portone di Ferro (apparentemente sigillato), una grata arrugginita che conduce alle Fogne sotterranee, o una breccia nelle mura coperte di rovi che porta verso i vecchi Giardini Reali.",
+    "choices": [
+      { "text": "Esamina da vicino il Portone di Ferro", "nextNodeId": "portone_bivio" },
+      { "text": "Forza la grata e scendi nelle Fogne", "nextNodeId": "fogne_ingresso" },
+      { "text": "Arrampicati nella breccia verso i Giardini", "nextNodeId": "giardini_ingresso" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "portone_bivio",
+    "title": "Il Meccanismo del Portone",
+    "text": "Il portone è bloccato da un imponente sistema di chiusura a combinazione. Sopra la toppa centrale c'è un'incisione geometrica: un triangolo rovesciato racchiuso in un cerchio. Sotto, tre pulsanti numerati: 3, 7, 9. Senti dei passi pesanti avvicinarsi dal sentiero esterno: le pattuglie dei goblin stanno tornando!",
+    "choices": [
+      { "text": "Premi il pulsante 3", "nextNodeId": "goblin_attacco" },
+      { "text": "Premi il pulsante 7", "nextNodeId": "atrio_principale" },
+      { "text": "Premi il pulsante 9", "nextNodeId": "goblin_attacco" },
+      { "text": "Scappa e nasconditi nelle Fogne", "nextNodeId": "fogne_ingresso" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "goblin_attacco",
+    "title": "Imboscata Goblin",
+    "text": "Sbagli combinazione e un piccolo allarme scatta. Una freccia scoccata dalle ronde goblin ti colpisce alla spalla prima che tu possa scappare! Perdi 4 HP. Riesci comunque a rotolare dentro le fogne per salvarti.",
+    "choices": [
+      { "text": "Avanza dolorante nelle Fogne", "nextNodeId": "fogne_ingresso" }
+    ],
+    "isEnding": false,
+    "hpModifier": -4
+  },
+  {
+    "id": "atrio_principale",
+    "title": "L'Atrio del Re",
+    "text": "Il meccanismo scatta e il portone si spalanca, richiudendosi subito dopo di te. Ti trovi nell'Atrio del Re. Colonne di marmo nero sorreggono un soffitto affrescato. Noti due uscite: una sontuosa scalinata dorata che sale ai piani superiori e una porta di legno borchiata che scende verso le prigioni.",
+    "choices": [
+      { "text": "Sali la scalinata dorata verso i piani superiori", "nextNodeId": "piani_superiori" },
+      { "text": "Apri la porta borchiata e scendi nelle prigioni", "nextNodeId": "prigioni_sotto" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "fogne_ingresso",
+    "title": "Il Labirinto di Fango",
+    "text": "Ti cali nel condotto. L'odore è nauseabondo e l'acqua ti arriva alle ginocchia. Avanzi al buio finché non trovi un bivio idraulico: a sinistra l'acqua scorre rapida verso una cascata sotterranea, a destra il tunnel si stringe e risale verso l'alto, sbarrato da una vecchia botola di legno marcio.",
+    "choices": [
+      { "text": "Segui il flusso dell'acqua a sinistra", "nextNodeId": "cascata_fogne" },
+      { "text": "Sali verso la botola di legno a destra", "nextNodeId": "prigioni_sotto" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "cascata_fogne",
+    "title": "Il Salto nel Vuoto",
+    "text": "Il flusso si fa improvvisamente troppo violentissimo. Perdi l'equilibrio e vieni trascinato giù per una cascata di venti metri, schiantandoti sulle rocce sottostanti. Le fogne diventano la tua tomba.",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "prigioni_sotto",
+    "title": "Le Celle dell'Oblio",
+    "text": "Ti trovi nei sotterranei adibiti a prigione. Scheletri incatenati giacciono nelle celle aperte. In fondo al corridoio, un enorme orco guardiano si sveglia all'improvviso sbarrandoti la strada! Impugna una gigantesca clava chiodata e ruggisce inferocito verso di te. Non puoi fuggire, devi combattere!",
+    "choices": [],
+    "isEnding": false,
+    "combat": {
+      "name": "Orco Guardiano",
+      "hp": 12,
+      "damage": 2,
+      "successNodeId": "orco_sconfitto"
+    }
+  },
+  {
+    "id": "orco_sconfitto",
+    "title": "Il Mostro Abbattuto",
+    "text": "Con un ultimo colpo decisivo, l'Orco Guardiano crolla al suolo con un pesante tonfo, privo di sensi. Tra i suoi averi trovi la Chiave Dorata della cancellata superiore. Ti curi parzialmente dalle ferite prima di risalire.",
+    "choices": [
+      { "text": "Sali verso l'Atrio del Re portando via il bottino", "nextNodeId": "atrio_principale" }
+    ],
+    "isEnding": false,
+    "itemToGive": "Chiave Dorata",
+    "hpModifier": 3
+  },
+  {
+    "id": "giardini_ingresso",
+    "title": "Il Giardino Invaso dai Rovi",
+    "text": "Superi la breccia e ti ritrovi in un antico orto botanico reale, ormai divorato dalla natura selvaggia. Al centro c'è una pianta carnivora che blocca il sentiero. A sinistra vedi una serra di vetro intatta, mentre a destra c'è un piccolo mausoleo di pietra bianca.",
+    "choices": [
+      { "text": "Entra nella serra di vetro", "nextNodeId": "serra_alchimia" },
+      { "text": "Ispeziona il mausoleo di pietra bianca", "nextNodeId": "mausoleo_cripta" },
+      { "text": "Usa il Diserbante Acido sulla pianta carnivora", "nextNodeId": "piani_superiori", "requiredItem": "Diserbante Acido" },
+      { "text": "Tenta di superare la pianta carnivora correndo", "nextNodeId": "pianta_attacco" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "pianta_attacco",
+    "title": "Morsa di Rovi",
+    "text": "Tenti lo scatto, ma i viticci della pianta carnivora ti avvolgono le gambe stritolandoti l'armatura. Subisci 5 HP di danno prima di salvarti nel Mausoleo!",
+    "choices": [
+      { "text": "Rifugiati ferito dentro il Mausoleo", "nextNodeId": "mausoleo_cripta" }
+    ],
+    "isEnding": false,
+    "hpModifier": -5
+  },
+  {
+    "id": "serra_alchimia",
+    "title": "La Serra dei Veleni",
+    "text": "La serra contiene fiale di estratti vegetali lasciati dagli alchimisti. Trovi un diserbante acido concentrato estremamente potente. Un serpente alchemico dagli occhi di fuoco ti sbarra l'uscita!",
+    "choices": [
+      { "text": "Lancia una pietra e fuggi rompendo i vetri con l'acido in tasca", "nextNodeId": "giardini_ingresso" }
+    ],
+    "isEnding": false,
+    "itemToGive": "Diserbante Acido"
+  },
+  {
+    "id": "mausoleo_cripta",
+    "title": "Il Riposo del Cavaliere",
+    "text": "All'interno del mausoleo c'è il sarcofago del primo comandante. Lo spettro del guerriero si materializza davanti a te impugnando una spada fantasma. Un'iscrizione recita: 'Solo chi affronta lo spettro con onore riceverà la luce'.",
+    "choices": [
+      { "text": "Inginocchiati in segno di rispetto", "nextNodeId": "spettro_alleato" },
+      { "text": "Estrai la tua arma e combatti lo spettro", "nextNodeId": "morte_spettro" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "morte_spettro",
+    "title": "Lama Spettrale",
+    "text": "La tua spada passa attraverso lo spettro senza fargli nulla. La sua lama fantasma ti attraversa il petto, congelando il tuo cuore all'istante. Cadi a terra senza vita.",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "spettro_alleato",
+    "title": "La Benedizione dello Scudo",
+    "text": "Lo spettro apprezza il tuo onore. Fa un cenno col capo e svanisce, lasciando lo Scudo d'Argento ai tuoi piedi. Questo scudo magico ti proteggerà dalle trappole energetiche. Dietro il sarcofago c'è una scalinata segreta verso i piani alti.",
+    "choices": [
+      { "text": "Prendi lo scudo e sali le scale segrete", "nextNodeId": "piani_superiori" }
+    ],
+    "isEnding": false,
+    "itemToGive": "Scudo d'Argento"
+  },
+  {
+    "id": "piani_superiori",
+    "title": "Le Stanze Alchemiche",
+    "text": "Sei finalmente nei quartieri alti della fortezza. L'aria profuma di incenso e ozono. Davanti a te c'è il Laboratorio del Re Folle. Una barriera magica di fulmini viola protegge la porta della Sala del Trono, dove è custodita la Corona di Smeraldo.",
+    "choices": [
+      { "text": "Attraversa i fulmini usando lo Scudo d'Argento", "nextNodeId": "trono_finale_buono", "requiredItem": "Scudo d'Argento" },
+      { "text": "Disattiva la barriera risolvendo l'enigma del quadro", "nextNodeId": "enigma_quadro" },
+      { "text": "Tenta di forzare la barriera magica a piedi nudi", "nextNodeId": "morte_fulmini" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "morte_fulmini",
+    "title": "Cenere alla Cenere",
+    "text": "I fulmini magici ti colpiscono con la forza di cento tempeste. Del tuo corpo non rimangono che ceneri sparse sul pavimento di marmo.",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "enigma_quadro",
+    "title": "L'Enigma dei Tre Regnanti",
+    "text": "Il quadro mostra three re. Un'iscrizione dice: 'Il primo mente sempre, il secondo dice la verità, il terzo parla solo se il primo è morto. Chi detiene la chiave del potere?'. Sotto ci sono tre fessure.",
+    "choices": [
+      { "text": "Inserisci la mano nella fessura del Secondo Re", "nextNodeId": "trono_finale_neutro" },
+      { "text": "Inserisci la mano nella fessura del Terzo Re", "nextNodeId": "trono_finale_malvagio" },
+      { "text": "Infilati nel corridoio laterale per fuggire dalla fortezza", "nextNodeId": "finale_fuga" }
+    ],
+    "isEnding": false
+  },
+  {
+    "id": "trono_finale_buono",
+    "title": "FINALE 1 - Il Re Giusto",
+    "text": "Lo Scudo d'Argento assorbe i fulmini magici! Entri nella Sala del Trono, sconfiggi l'ombra del Re Folle e indossi la Corona di Smeraldo. Diventi il nuovo saggio regnante. Vittoria Perfetta!",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "trono_finale_neutro",
+    "title": "FINALE 2 - Il Custode del Sapere",
+    "text": "La scelta è corretta e la barriera si dissolve. Trovi la Corona, ma decidi che il suo potere è troppo pericoloso. La distruggi, liberando l'energia e scegliendo una vita di pace. Vittoria Neutra.",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "trono_finale_malvagio",
+    "title": "FINALE 3 - L'Erede della Follia",
+    "text": "Inserisci la mano e un meccanismo ti punge il dito. La barriera si apre, ma il veleno altera la tua mente. Indossi la corona e vieni consumato dalla follia. Diventi il nuovo tiranno.",
+    "choices": [],
+    "isEnding": true
+  },
+  {
+    "id": "finale_fuga",
+    "title": "FINALE 4 - Il Codardo Sopravvissuto",
+    "text": "Preso dal panico di fronte alla complessità degli enigmi, decidi di fuggire dalla fortezza sotto la pioggia, senza un soldo ma con la pelle salva. La tua storia finisce nel dimenticatoio.",
+    "choices": [],
+    "isEnding": true
+  }
+]
